@@ -40,4 +40,6 @@ class User extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    public $timestamps = false;
 }
