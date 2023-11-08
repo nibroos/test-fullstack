@@ -169,7 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        App\Providers\GlobalFunctionsServiceProvider::class,
+        App\Providers\GlobalFunctionServiceProvider::class,
     ])->toArray(),
 
     /*

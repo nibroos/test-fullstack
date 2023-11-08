@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class GlobalFunctionsServiceProvider extends ServiceProvider
+class GlobalFunctionServiceProvider extends ServiceProvider
 {
   /**
    * Register services.
