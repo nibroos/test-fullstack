@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductStoreRequest;
-use App\Http\Requests\ProductDeleteRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Actions\Products\ProductStoreAction;
-use App\Http\Resources\ProductIndexResource;
+use App\Http\Resources\ProductShowResource;
 use App\Actions\Products\ProductUpdateAction;
 use App\Http\Resources\ProductSelectResource;
 
@@ -33,7 +32,7 @@ class ProductController extends Controller
         $productBuilder = $this->productService->indexProduct();
         $products = getPaginateByBuilder($productBuilder);
         if ($products->isNotEmpty()) {
-            return ProductIndexResource::collection($products);
+            return ProductShowResource::collection($products);
         } else {
             return response([
                 'message' => 'Produk tidak ditemukan', 'data' => []
@@ -46,7 +45,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return new ProductIndexResource($product);
+        return new ProductShowResource($product);
     }
 
     /**
