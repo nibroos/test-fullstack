@@ -226,17 +226,15 @@
 
 <script setup>
 import { useForm, useField, defineRule } from "vee-validate";
-import { required, min, createPassword, mail, requiredNum, num, phoneStart } from "../utlis/validationRules";
+import { required, min, createPassword } from "../utlis/validationRules";
 
 defineRule("required", required);
-defineRule("requiredNum", requiredNum);
 defineRule("min", min);
-defineRule("num", num);
 defineRule("createPassword", createPassword);
 
 const schema = {
   name: "required|min:1",
-  username: "required|mail",
+  username: "required",
   password: "required|min:6|createPassword:1",
 };
 

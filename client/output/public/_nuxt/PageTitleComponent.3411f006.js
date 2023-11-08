@@ -1,0 +1,1 @@
+import{o as e,c as a,a as o,t as r}from"./entry.b2f549b0.js";const s={class:"font-bold text-2xl text-gray-900 dark:text-gray-50"},i={__name:"PageTitleComponent",props:{text:String},setup(t){return(n,c)=>(e(),a("div",null,[o("h1",s,r(t.text),1)]))}};export{i as default};
