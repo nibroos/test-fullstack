@@ -169,7 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        App\Providers\GlobalFunctionServiceProvider::class,
+        App\Providers\GlobalFunctionsServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -183,8 +183,8 @@ return [
     |
     */
 
-    'aliases' => Facade::defaultAliases()->merge([
-        // 'Example' => App\Facades\Example::class,
-    ])->toArray(),
+    // 'aliases' => Facade::defaultAliases()->merge([
+    //     // 'Example' => App\Facades\Example::class,
+    // ])->toArray(),
 
 ];

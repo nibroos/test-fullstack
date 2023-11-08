@@ -44,7 +44,7 @@ php artisan key:generate
 # Run migrations
 php artisan migrate
 
-# Run seeder
+# Run seeder, product & transaction from 2023-08-01 to 2023-11-30
 php artisan db:seed
 
 # Run server
