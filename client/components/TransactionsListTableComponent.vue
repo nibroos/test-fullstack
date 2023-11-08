@@ -2,19 +2,18 @@
   <div>
 
     <Head>
-      <Title>Produk • {{ runtimeConfig.public.APP_NAME }}
+      <Title>Transaksi • {{ runtimeConfig.public.APP_NAME }}
       </Title>
-      <Meta name="description" content="Halaman pengelolaan produk" />
+      <Meta name="description" content="Halaman pengelolaan transaksi" />
     </Head>
-    <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg">
-      <div
-        class="p-4 flex flex-row gap-4 md:grid-rows-2 bg-white dark:bg-zinc-800 rounded-lg items-center overflow-x-auto w-full !min-w-full">
+    <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-x-auto">
+      <div class="p-4 flex flex-row sm:flex-col gap-4 md:grid-rows-2 bg-white dark:bg-zinc-800 rounded-lg items-center">
 
         <div class="flex flex-col gap-1 w-1/4 sm:w-full">
           <div class="dark:text-zinc-200">
             Tanggal
           </div>
-          <VueDatePicker :model-value="searchProducts.searchPeriodeAt" range @update:model-value="setDate"
+          <VueDatePicker :model-value="searchTransactions.searchPeriodeAt" range @update:model-value="setDate"
             placeholder="Pilih tanggal/rentang tanggal" :format="datePickerFormat" :clearable="false" cancelText="Batal"
             selectText="Pilih" :start-time="startTime" :preset-ranges="presetRanges" :enable-time-picker="false"
             multi-calendars multi-calendars-solo teleport-center :day-names="dayName" locale="id">
@@ -24,14 +23,14 @@
             </template>
           </VueDatePicker>
         </div>
-        <div class="flex flex-col gap-1 grow">
-          <div class="dark:text-zinc-200 whitespace-nowrap">Pencarian global</div>
+        <div class="flex flex-col gap-1 w-full">
+          <div class="dark:text-zinc-200">Pencarian global</div>
           <SearchTextComponent class="col-span-3 md:col-span-full" v-model:searchValue="searchGlobal"
             :placeholderText="['Cari Pisang..', 'sendok...', 'hoodie', 'vitamin A.. ', '..']" labelFor="searchGlobal" />
         </div>
       </div>
       <div class="overflow-x-auto">
-        <div v-if="isLoadingProducts"
+        <div v-if="isLoadingTransactions"
           class="flex flex-col items-center text-center justify-center m-auto bg-zinc-50 dark:bg-zinc-800 h-max text-emerald-400">
           <div class="w-full animate-pulse grid grid-cols-5 gap-4 p-8 bg-zinc-50 dark:bg-zinc-800">
             <div class="h-3.5 bg-zinc-200 dark:bg-zinc-700 rounded-full mb-3.5"></div>
@@ -56,7 +55,7 @@
             <div class="h-3.5 bg-zinc-200 dark:bg-zinc-700 rounded-full mb-3.5"></div>
           </div>
         </div>
-        <table v-else-if="!products.data || !products.data.length"
+        <table v-else-if="!transactions.data || !transactions.data.length"
           class="flex flex-col py-16 items-center text-center justify-center m-auto bg-gray-50 dark:bg-zinc-900 h-max text-emerald-400">
           <svg width="72" height="72" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M21.5999 23.091H15.2227L13.3456 18.7196L18.5913 16.7139L21.5999 23.091Z" fill="#5D5FEF" />
@@ -73,301 +72,358 @@
               Hasil tidak ditemukan
             </div>
             <div class="text-sm text-gray-500">
-              Kami tidak menemukan produk yang anda cari
+              Kami tidak menemukan transaksi yang anda cari
             </div>
             <div class="text-sm text-gray-500">
               Silahkan ulangi pencarian..
             </div>
           </div>
         </table>
-        <table v-else class="min-w-max table-auto border-t border-zinc-200 dark:border-zinc-600 w-full">
+        <table v-else class="min-w-full table-auto border-t border-zinc-200 dark:border-zinc-600">
           <thead>
             <tr>
-              <th class="text-center py-2 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800">
+              <th
+                class="py-2 whitespace-nowrap px-3 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
                 <div
                   class="flex flex-row items-center justify-center cursor-pointer text-zinc-400 dark:text-zinc-600 hover:text-emerald-600 transition ease-in-out dark:hover:text-emerald-600"
-                  @click="updateOrdering('products.id')">
-                  <div class="leading-4 text-sm font-bold tracking-wider flex items-center" :class="{
+                  @click="updateOrdering('transactions.id')">
+                  <div class="leading-4 text-sm font-bold tracking-wider" :class="{
                     'font-bold text-emerald-600':
-                      searchProducts.orderColumn === 'products.id',
+                      searchTransactions.orderColumn === 'transactions.id',
                   }">
                     ID
                   </div>
                   <div class="select-none ml-0.5">
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'asc' &&
-                        searchProducts.orderColumn ===
-                        'products.id',
+                        searchTransactions.orderColumn ===
+                        'transactions.id',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'asc' &&
-                        searchProducts.orderColumn ===
-                        'products.id',
+                        searchTransactions.orderColumn ===
+                        'transactions.id',
                     }">&uarr;</span>
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'desc' &&
-                        searchProducts.orderColumn ===
-                        'products.id',
+                        searchTransactions.orderColumn ===
+                        'transactions.id',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'desc' &&
-                        searchProducts.orderColumn ===
-                        'products.id',
+                        searchTransactions.orderColumn ===
+                        'transactions.id',
                     }">&darr;</span>
                   </div>
                 </div>
               </th>
-              <th class="py-2 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
+              <th
+                class="py-2 whitespace-nowrap px-3 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
                 <div
                   class="flex flex-row items-center cursor-pointer text-zinc-400 dark:text-zinc-600 hover:text-emerald-600 transition ease-in-out dark:hover:text-emerald-600"
-                  @click="updateOrdering('products.name')">
+                  @click="updateOrdering('transactions.reference_no')">
                   <div class="leading-4 font-bold text-sm" :class="{
                     'font-bold text-emerald-600':
-                      searchProducts.orderColumn === 'products.name',
+                      searchTransactions.orderColumn === 'transactions.reference_no',
                   }">
-                    Nama
+                    No Referensi
                   </div>
                   <div class="select-none ml-0.5">
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'asc' &&
-                        searchProducts.orderColumn ===
-                        'products.name',
+                        searchTransactions.orderColumn ===
+                        'transactions.reference_no',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'asc' &&
-                        searchProducts.orderColumn ===
-                        'products.name',
+                        searchTransactions.orderColumn ===
+                        'transactions.reference_no',
                     }">&uarr;</span>
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'desc' &&
-                        searchProducts.orderColumn ===
-                        'products.name',
+                        searchTransactions.orderColumn ===
+                        'transactions.reference_no',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'desc' &&
-                        searchProducts.orderColumn ===
-                        'products.name',
+                        searchTransactions.orderColumn ===
+                        'transactions.reference_no',
                     }">&darr;</span>
                   </div>
                 </div>
               </th>
-              <th class="py-2 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
+              <th
+                class="py-2 whitespace-nowrap px-3 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
+                <div
+                  class="flex flex-row items-center cursor-pointer text-zinc-400 dark:text-zinc-600 hover:text-emerald-600 transition ease-in-out dark:hover:text-emerald-600"
+                  @click="updateOrdering('product_name')">
+                  <div class="leading-4 font-bold text-sm" :class="{
+                    'font-bold text-emerald-600':
+                      searchTransactions.orderColumn === 'product_name',
+                  }">
+                    Nama Produk
+                  </div>
+                  <div class="select-none ml-0.5">
+                    <span :class="{
+                      'text-emerald-600':
+                        searchTransactions.orderDirection ===
+                        'asc' &&
+                        searchTransactions.orderColumn ===
+                        'product_name',
+                      hidden:
+                        searchTransactions.orderDirection !==
+                        '' &&
+                        searchTransactions.orderDirection !==
+                        'asc' &&
+                        searchTransactions.orderColumn ===
+                        'product_name',
+                    }">&uarr;</span>
+                    <span :class="{
+                      'text-emerald-600':
+                        searchTransactions.orderDirection ===
+                        'desc' &&
+                        searchTransactions.orderColumn ===
+                        'product_name',
+                      hidden:
+                        searchTransactions.orderDirection !==
+                        '' &&
+                        searchTransactions.orderDirection !==
+                        'desc' &&
+                        searchTransactions.orderColumn ===
+                        'product_name',
+                    }">&darr;</span>
+                  </div>
+                </div>
+              </th>
+              <th
+                class="py-2 whitespace-nowrap px-3 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
                 <div
                   class="flex flex-row items-center cursor-pointer text-zinc-400 dark:text-zinc-600 hover:text-emerald-600 transition ease-in-out dark:hover:text-emerald-600"
                   @click="updateOrdering('products.price')">
                   <div class="leading-4 text-sm font-bold tracking-wider" :class="{
                     'font-bold text-emerald-600':
-                      searchProducts.orderColumn === 'products.price',
+                      searchTransactions.orderColumn === 'products.price',
                   }">
                     Harga
                   </div>
                   <div class="select-none ml-0.5">
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'asc' &&
-                        searchProducts.orderColumn ===
+                        searchTransactions.orderColumn ===
                         'products.price',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'asc' &&
-                        searchProducts.orderColumn ===
+                        searchTransactions.orderColumn ===
                         'products.price',
                     }">&uarr;</span>
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'desc' &&
-                        searchProducts.orderColumn ===
+                        searchTransactions.orderColumn ===
                         'products.price',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'desc' &&
-                        searchProducts.orderColumn ===
+                        searchTransactions.orderColumn ===
                         'products.price',
                     }">&darr;</span>
                   </div>
                 </div>
               </th>
-              <th class="py-2 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
+              <th
+                class="py-2 whitespace-nowrap px-3 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
                 <div
                   class="flex flex-row items-center cursor-pointer text-zinc-400 dark:text-zinc-600 hover:text-emerald-600 transition ease-in-out dark:hover:text-emerald-600"
-                  @click="updateOrdering('products.stock')">
+                  @click="updateOrdering('transactions.quantity')">
                   <div class="leading-4 text-sm font-bold tracking-wider" :class="{
                     'font-bold text-emerald-600':
-                      searchProducts.orderColumn === 'products.stock',
+                      searchTransactions.orderColumn === 'transactions.quantity',
                   }">
-                    Stok
+                    Kuantitas
                   </div>
                   <div class="select-none ml-0.5">
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'asc' &&
-                        searchProducts.orderColumn ===
-                        'products.stock',
+                        searchTransactions.orderColumn ===
+                        'transactions.quantity',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'asc' &&
-                        searchProducts.orderColumn ===
-                        'products.stock',
+                        searchTransactions.orderColumn ===
+                        'transactions.quantity',
                     }">&uarr;</span>
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'desc' &&
-                        searchProducts.orderColumn ===
-                        'products.stock',
+                        searchTransactions.orderColumn ===
+                        'transactions.quantity',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'desc' &&
-                        searchProducts.orderColumn ===
-                        'products.stock',
+                        searchTransactions.orderColumn ===
+                        'transactions.quantity',
                     }">&darr;</span>
                   </div>
                 </div>
               </th>
-              <th class="py-2 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
+              <th
+                class="py-2 whitespace-nowrap px-3 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
                 <div
                   class="flex flex-row items-center cursor-pointer text-zinc-400 dark:text-zinc-600 hover:text-emerald-600 transition ease-in-out dark:hover:text-emerald-600"
-                  @click="updateOrdering('products.created_at')">
+                  @click="updateOrdering('payment_amount')">
                   <div class="leading-4 text-sm font-bold tracking-wider" :class="{
                     'font-bold text-emerald-600':
-                      searchProducts.orderColumn === 'products.created_at',
+                      searchTransactions.orderColumn === 'payment_amount',
+                  }">
+                    Payment Amount
+                  </div>
+                  <div class="select-none ml-0.5">
+                    <span :class="{
+                      'text-emerald-600':
+                        searchTransactions.orderDirection ===
+                        'asc' &&
+                        searchTransactions.orderColumn ===
+                        'payment_amount',
+                      hidden:
+                        searchTransactions.orderDirection !==
+                        '' &&
+                        searchTransactions.orderDirection !==
+                        'asc' &&
+                        searchTransactions.orderColumn ===
+                        'payment_amount',
+                    }">&uarr;</span>
+                    <span :class="{
+                      'text-emerald-600':
+                        searchTransactions.orderDirection ===
+                        'desc' &&
+                        searchTransactions.orderColumn ===
+                        'payment_amount',
+                      hidden:
+                        searchTransactions.orderDirection !==
+                        '' &&
+                        searchTransactions.orderDirection !==
+                        'desc' &&
+                        searchTransactions.orderColumn ===
+                        'payment_amount',
+                    }">&darr;</span>
+                  </div>
+                </div>
+              </th>
+              <th
+                class="py-2 whitespace-nowrap px-3 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left">
+                <div
+                  class="flex flex-row items-center cursor-pointer text-zinc-400 dark:text-zinc-600 hover:text-emerald-600 transition ease-in-out dark:hover:text-emerald-600"
+                  @click="updateOrdering('transactions.created_at')">
+                  <div class="leading-4 text-sm font-bold tracking-wider" :class="{
+                    'font-bold text-emerald-600':
+                      searchTransactions.orderColumn === 'transactions.created_at',
                   }">
                     Dibuat tanggal
                   </div>
                   <div class="select-none ml-0.5">
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'asc' &&
-                        searchProducts.orderColumn ===
-                        'products.created_at',
+                        searchTransactions.orderColumn ===
+                        'transactions.created_at',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'asc' &&
-                        searchProducts.orderColumn ===
-                        'products.created_at',
+                        searchTransactions.orderColumn ===
+                        'transactions.created_at',
                     }">&uarr;</span>
                     <span :class="{
                       'text-emerald-600':
-                        searchProducts.orderDirection ===
+                        searchTransactions.orderDirection ===
                         'desc' &&
-                        searchProducts.orderColumn ===
-                        'products.created_at',
+                        searchTransactions.orderColumn ===
+                        'transactions.created_at',
                       hidden:
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         '' &&
-                        searchProducts.orderDirection !==
+                        searchTransactions.orderDirection !==
                         'desc' &&
-                        searchProducts.orderColumn ===
-                        'products.created_at',
+                        searchTransactions.orderColumn ===
+                        'transactions.created_at',
                     }">&darr;</span>
                   </div>
                 </div>
               </th>
-              <th
-                class="py-2 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left text-sm font-bold text-zinc-400 dark:text-zinc-600">
-                Deskripsi
-              </th>
-              <th
-                class="py-2 border-gray-300 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-left text-sm font-bold text-zinc-400 dark:text-zinc-600">
-                Aksi
-              </th>
             </tr>
           </thead>
           <tbody class="bg-white mb-4 text-zinc-900 dark:text-zinc-200">
-            <tr v-for="product in products.data" :key="product.id"
+            <tr v-for="transaction in transactions.data" :key="transaction.id"
               class="even:bg-white odd:bg-gray-50 dark:even:bg-zinc-800 dark:odd:bg-zinc-900 ">
               <td class="py-1.5 px-3 whitespace-nowrap text-sm leading-5 text-center">
-                {{ product.id }}
+                {{ transaction.id }}
               </td>
               <td class="py-1.5 px-3 whitespace-nowrap text-sm leading-5">
-                {{ product.name }}
+                {{ transaction.reference_no }}
               </td>
               <td class="py-1.5 px-3 whitespace-nowrap text-sm leading-5">
-                {{ rupiah(product.price) }}
+                {{ transaction.product_name }}
               </td>
               <td class="py-1.5 px-3 whitespace-nowrap text-sm leading-5">
-                {{ fixedNumberFormat(product.stock) }}
+                {{ rupiah(transaction.product_price) }}
               </td>
               <td class="py-1.5 px-3 whitespace-nowrap text-sm leading-5">
-                {{ product.created_at }}
+                {{ fixedNumberFormat(transaction.quantity) }}
               </td>
               <td class="py-1.5 px-3 whitespace-nowrap text-sm leading-5">
-                {{ product.description }}
+                {{ rupiah(transaction.payment_amount) }}
               </td>
               <td class="py-1.5 px-3 whitespace-nowrap text-sm leading-5">
-                <div class="flex flex-row gap-2">
-                  <div @click="openModal(product.id, false)"
-                    class="w-max font-semibold text-white dark:text-white bg-emerald-500 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-center p-1.5 rounded-full transition ease-in-out duration-200 sm:my-2 cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                      <path fill="currentColor"
-                        d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3z" />
-                    </svg>
-                  </div>
-                  <div @click="openModal(product.id, true)"
-                    class="w-max font-semibold text-white dark:text-white bg-emerald-500 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-center p-1.5 rounded-full transition ease-in-out duration-200 sm:my-2 cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                      <path fill="currentColor"
-                        d="m19.3 8.925l-4.25-4.2l1.4-1.4q.575-.575 1.413-.575q.837 0 1.412.575l1.4 1.4q.575.575.6 1.388q.025.812-.55 1.387ZM17.85 10.4L7.25 21H3v-4.25l10.6-10.6Z" />
-                    </svg>
-                  </div>
-
-                  <div class="flex justify-start items-center xs:mb-4 xs:w-full xs:justify-center">
-                    <a href="#" @click.prevent="deleteProduct(product.id)"
-                      class="w-max font-semibold text-white dark:text-white bg-emerald-500 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-center p-1.5 rounded-full transition ease-in-out duration-200 sm:my-2 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                        <path fill="currentColor"
-                          d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12Z" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
+                {{ transaction.created_at }}
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div v-if="products.meta">
-        <div v-if="products.meta.total > 5"
+      <div v-if="transactions.meta">
+        <div v-if="transactions.meta.total > 5"
           class="border-t text-xs pl-3 flex rounded-lg items-center bg-white dark:border-zinc-700 dark:bg-zinc-800">
-          <PerPageComponent v-model="searchProducts.searchPerPage"
+          <PerPageComponent v-model="searchTransactions.searchPerPage"
             @update:parentPerPageValue="updateParentPerPageValue" />
-          <vue-awesome-paginate v-model="products.meta.current_page" :items-per-page="products.meta.per_page"
-            :max-pages-shown="3" :totalItems="products.meta.total" :on-click="paginationChangePage" class="py-4 px-6">
+          <vue-awesome-paginate v-model="transactions.meta.current_page" :items-per-page="transactions.meta.per_page"
+            :max-pages-shown="3" :totalItems="transactions.meta.total" :on-click="paginationChangePage" class="py-4 px-6">
           </vue-awesome-paginate>
         </div>
       </div>
     </div>
-    <LazyButtonModalShowProductComponent v-if="productsModal.show" :id="productId" />
   </div>
 </template>
 
@@ -375,128 +431,120 @@
 import moment from "moment";
 const runtimeConfig = useRuntimeConfig();
 
-const { products, getProducts, isLoadingProducts,
+const { transactions, getTransactions, isLoadingTransactions,
   searchGlobal, searchPeriodeAt, searchPerPage, orderColumn, orderDirection,
-  rupiah, fixedNumberFormat, deleteProduct } = useProducts()
-const searchProducts = useSearchProducts()
-const productId = ref()
-const productsModal = useProductsModal()
+  rupiah, fixedNumberFormat } = useTransactions()
+const searchTransactions = useSearchTransactions()
 
 onMounted(() => {
-  getProducts(
-    searchProducts.value.pageNumber,
-    searchProducts.value.searchPeriodeAt[0],
-    searchProducts.value.searchPeriodeAt[1],
-    searchProducts.value.searchGlobal,
-    searchProducts.value.orderColumn,
-    searchProducts.value.orderDirection,
-    searchProducts.value.searchPerPage
+  getTransactions(
+    searchTransactions.value.pageNumber,
+    searchTransactions.value.searchPeriodeAt[0],
+    searchTransactions.value.searchPeriodeAt[1],
+    searchTransactions.value.searchGlobal,
+    searchTransactions.value.orderColumn,
+    searchTransactions.value.orderDirection,
+    searchTransactions.value.searchPerPage
   );
 
 });
 
 const paginationChangePage = (page) => {
-  searchProducts.value.pageNumber = page
-  getProducts(
-    searchProducts.value.pageNumber,
-    searchProducts.value.searchPeriodeAt[0],
-    searchProducts.value.searchPeriodeAt[1],
-    searchProducts.value.searchGlobal,
-    searchProducts.value.orderColumn,
-    searchProducts.value.orderDirection,
-    searchProducts.value.searchPerPage
+  searchTransactions.value.pageNumber = page
+  getTransactions(
+    searchTransactions.value.pageNumber,
+    searchTransactions.value.searchPeriodeAt[0],
+    searchTransactions.value.searchPeriodeAt[1],
+    searchTransactions.value.searchGlobal,
+    searchTransactions.value.orderColumn,
+    searchTransactions.value.orderDirection,
+    searchTransactions.value.searchPerPage
   )
 }
 
 const updateOrdering = (column) => {
-  searchProducts.value.orderColumn = column;
-  searchProducts.value.orderDirection = searchProducts.value.orderDirection === "asc" ? "desc" : "asc";
-  isLoadingProducts.value = true
-  getProducts(
-    searchProducts.value.pageNumber,
-    searchProducts.value.searchPeriodeAt[0],
-    searchProducts.value.searchPeriodeAt[1],
-    searchProducts.value.searchGlobal,
-    searchProducts.value.orderColumn,
-    searchProducts.value.orderDirection,
-    searchProducts.value.searchPerPage
+  searchTransactions.value.orderColumn = column;
+  searchTransactions.value.orderDirection = searchTransactions.value.orderDirection === "asc" ? "desc" : "asc";
+  isLoadingTransactions.value = true
+  getTransactions(
+    searchTransactions.value.pageNumber,
+    searchTransactions.value.searchPeriodeAt[0],
+    searchTransactions.value.searchPeriodeAt[1],
+    searchTransactions.value.searchGlobal,
+    searchTransactions.value.orderColumn,
+    searchTransactions.value.orderDirection,
+    searchTransactions.value.searchPerPage
   );
 };
 
 watch(searchGlobal, (current, previous) => {
-  isLoadingProducts.value = true
-  searchProducts.value.searchGlobal = current
-  searchProducts.value.pageNumber = 1
-  getProducts(
-    searchProducts.value.pageNumber,
-    searchProducts.value.searchPeriodeAt[0],
-    searchProducts.value.searchPeriodeAt[1],
+  isLoadingTransactions.value = true
+  searchTransactions.value.searchGlobal = current
+  searchTransactions.value.pageNumber = 1
+  getTransactions(
+    searchTransactions.value.pageNumber,
+    searchTransactions.value.searchPeriodeAt[0],
+    searchTransactions.value.searchPeriodeAt[1],
     current,
-    searchProducts.value.orderColumn,
-    searchProducts.value.orderDirection,
-    searchProducts.value.searchPerPage
+    searchTransactions.value.orderColumn,
+    searchTransactions.value.orderDirection,
+    searchTransactions.value.searchPerPage
   );
 });
 
 watch(searchPeriodeAt, (current, previous) => {
-  isLoadingProducts.value = true
-  searchProducts.value.searchPeriodeAt = current
-  searchProducts.value.pageNumber = 1
-  getProducts(
-    searchProducts.value.pageNumber,
+  isLoadingTransactions.value = true
+  searchTransactions.value.searchPeriodeAt = current
+  searchTransactions.value.pageNumber = 1
+  getTransactions(
+    searchTransactions.value.pageNumber,
     current[0],
     current[1],
-    searchProducts.value.searchGlobal,
-    searchProducts.value.orderColumn,
-    searchProducts.value.orderDirection,
-    searchProducts.value.searchPerPage
+    searchTransactions.value.searchGlobal,
+    searchTransactions.value.orderColumn,
+    searchTransactions.value.orderDirection,
+    searchTransactions.value.searchPerPage
   );
 })
 
 watch(searchPerPage, (current, previous) => {
-  isLoadingProducts.value = true
-  searchProducts.value.searchPerPage = current
-  searchProducts.value.pageNumber = 1
-  getProducts(
-    searchProducts.value.pageNumber,
+  isLoadingTransactions.value = true
+  searchTransactions.value.searchPerPage = current
+  searchTransactions.value.pageNumber = 1
+  getTransactions(
+    searchTransactions.value.pageNumber,
     current[0],
     current[1],
-    searchProducts.value.searchGlobal,
-    searchProducts.value.orderColumn,
-    searchProducts.value.orderDirection,
+    searchTransactions.value.searchGlobal,
+    searchTransactions.value.orderColumn,
+    searchTransactions.value.orderDirection,
     current
   );
 })
 
 watchEffect(() => {
-  if (searchProducts.value) {
-    // pageNumber.value = searchProducts.value.pageNumber,
-    searchPeriodeAt.value = searchProducts.value.searchPeriodeAt
-    searchGlobal.value = searchProducts.value.searchGlobal
-    orderColumn.value = searchProducts.value.orderColumn
-    orderDirection.value = searchProducts.value.orderDirection
-    searchPerPage.value = searchProducts.value.searchPerPage
+  if (searchTransactions.value) {
+    // pageNumber.value = searchTransactions.value.pageNumber,
+    searchPeriodeAt.value = searchTransactions.value.searchPeriodeAt
+    searchGlobal.value = searchTransactions.value.searchGlobal
+    orderColumn.value = searchTransactions.value.orderColumn
+    orderDirection.value = searchTransactions.value.orderDirection
+    searchPerPage.value = searchTransactions.value.searchPerPage
   }
 
-  if (searchProducts.value.successCreateProduct === true) {
-    getProducts(
-      searchProducts.value.pageNumber,
-      searchProducts.value.searchPeriodeAt[0],
-      searchProducts.value.searchPeriodeAt[1],
-      searchProducts.value.searchGlobal,
-      searchProducts.value.orderColumn,
-      searchProducts.value.orderDirection,
-      searchProducts.value.searchPerPage
+  if (searchTransactions.value.successCreateTransaction === true) {
+    getTransactions(
+      searchTransactions.value.pageNumber,
+      searchTransactions.value.searchPeriodeAt[0],
+      searchTransactions.value.searchPeriodeAt[1],
+      searchTransactions.value.searchGlobal,
+      searchTransactions.value.orderColumn,
+      searchTransactions.value.orderDirection,
+      searchTransactions.value.searchPerPage
     );
-    searchProducts.value.successCreateProduct = false
+    searchTransactions.value.successCreateTransaction = false
   }
 })
-
-const openModal = (id, showEdit) => {
-  productId.value = id
-  productsModal.value.show = true
-  productsModal.value.edit = showEdit
-}
 
 const calendarDMYFormat = "DD/MM/YYYY"
 const datetimeFormat = "YYYY-MM-DD HH:mm"
@@ -519,17 +567,17 @@ const setDate = (value) => {
       value[1] = value[0]
       end = moment(value[1]).endOf('day').format(datetimeFormat)
     }
-    searchProducts.value.searchPeriodeAt = [start, end];
+    searchTransactions.value.searchPeriodeAt = [start, end];
     searchPeriodeAt.value = [start, end];
     console.log(start);
     console.log(end);
-    console.log(searchProducts.value.searchPeriodeAt);
+    console.log(searchTransactions.value.searchPeriodeAt);
   }
 };
 
 const datePickerFormat = () => {
-  let periodeStart = moment(searchProducts.value.searchPeriodeAt[0]).format(calendarDMYFormat)
-  let periodeEnd = moment(searchProducts.value.searchPeriodeAt[1]).format(calendarDMYFormat)
+  let periodeStart = moment(searchTransactions.value.searchPeriodeAt[0]).format(calendarDMYFormat)
+  let periodeEnd = moment(searchTransactions.value.searchPeriodeAt[1]).format(calendarDMYFormat)
   if (periodeStart === periodeEnd) {
     return periodeStart
   } else {
@@ -538,7 +586,7 @@ const datePickerFormat = () => {
 }
 
 function updateParentPerPageValue(newValue) {
-  searchProducts.value.searchPerPage = parseInt(newValue)
+  searchTransactions.value.searchPerPage = parseInt(newValue)
 }
 
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Products\ProductDeleteAction;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Services\ProductServices;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductStoreRequest;
+use App\Http\Requests\ProductDeleteRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Actions\Products\ProductStoreAction;
 use App\Http\Resources\ProductIndexResource;
@@ -84,11 +86,11 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product, ProductDeleteAction $productDeleteAction)
     {
         try {
             DB::beginTransaction();
-            $product->delete();
+            $productDeleteAction->execute($product);
             DB::commit();
             return response(['message' => 'Data produk berhasil dihapus'], 200);
         } catch (\Exception $exception) {
@@ -100,15 +102,12 @@ class ProductController extends Controller
 
     public function selectProduct()
     {
-        $productBuilder = $this->productService->indexProduct();
-        $productBuilder->limit(50);
-        $products = getObjectByBuilder($productBuilder);
-        if ($products->isNotEmpty()) {
-            return ProductSelectResource::collection($products);
-        } else {
-            return response([
-                'message' => 'Produk tidak ditemukan', 'data' => []
-            ], 404);
+        try {
+            $productBuilder = $this->productService->productOptions();
+            $products = getObjectByBuilder($productBuilder);
+            return response(['results' => ProductSelectResource::collection($products)->resolve()]);
+        } catch (\Exception $exception) {
+            return response(['message' => $exception->getMessage(), 'results' => []], 404);
         }
     }
 }

@@ -6,6 +6,7 @@ export default function () {
   const swal = inject('$swal')
   const isLoadingUser = ref(true)
 
+  const route = useRoute()
   const userProfile = useUserProfile()
   const bearerToken = useToken()
   const assignToken = () => {
@@ -113,11 +114,14 @@ export default function () {
       }
     })
       .then(response => {
-        navigateTo('/')
         let shortUsername = response.name.substring(0, 16)
         userProfile.value.name = `${shortUsername}`
 
         isLoadingUser.value = false;
+
+        if (route.path === '/login') {
+          navigateTo('/')
+        }
       })
       .catch(error => {
         localStorage.setItem('token', '')

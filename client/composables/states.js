@@ -35,3 +35,22 @@ export const useSearchProducts = () => useState(() => ({
   searchPerPage: 5,
   successCreateProduct: false,
 }))
+
+export const useSearchTransactions = () => useState(() => ({
+  pageNumber: 1,
+  searchProductID: '',
+  searchPeriodeAt: [moment(new Date()).startOf('month').startOf('day').format(datetimeFormat), moment(new Date()).endOf('month').endOf('day').format(datetimeFormat)],
+  searchGlobal: '',
+  orderColumn: 'transactions.id',
+  orderDirection: 'desc',
+  searchPerPage: 5,
+  successCreateTransaction: false,
+  searchProductIDSelected: '',
+}))
+
+export const useTransactionsModal = () => useState(() => ({
+  create: false,
+  edit: false,
+  show: false,
+  id: Number,
+}))

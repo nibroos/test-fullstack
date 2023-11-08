@@ -19,6 +19,7 @@ class ProductSelectResource extends JsonResource
             [
                 'id' => $this->id,
                 'text' => $text,
+                'price' => $this->price,
             ];
     }
 }

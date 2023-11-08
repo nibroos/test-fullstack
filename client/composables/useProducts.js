@@ -12,12 +12,13 @@ export default function () {
     created_at: '',
   })
   const searchProducts = useSearchProducts()
-  const productSelected = ref([])
+  const productOptions = ref([])
   const validationErrors = ref({})
   const isLoading = ref(false)
   const swal = inject('$swal')
   const isLoadingProducts = ref(true)
   const isLoadingProduct = ref(true)
+  const isLoadingProductOptions = ref(false)
 
   const searchPeriodeAt = ref([searchProducts.value.searchPeriodeStartAt, searchProducts.value.searchPeriodeEndAt])
   const searchGlobal = ref(searchProducts.value.searchGlobal);
@@ -25,6 +26,11 @@ export default function () {
   const orderDirection = ref(searchProducts.value.orderDirection);
   const searchPerPage = ref(searchProducts.value.searchPerPage);
   const pageNumber = ref(searchProducts.value.pageNumber);
+
+  const optionSelectedProduct = ref({
+    id: '',
+    text: ''
+  });
 
   const productsModal = useProductsModal()
   const rupiah = (number) => {
@@ -286,12 +292,23 @@ export default function () {
   const selectProducts = async (
     search_name = ''
   ) => {
-    await $fetch('/api/product/select?search_name=' + search_name)
-      .then(response => {
-        productSelected.value = response.data.data;
-      })
+    assignToken()
+    isLoadingProductOptions.value = true;
+    await $fetch(`${config.public.BASE_URL}/api/product/select?search_name=` + search_name, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${JSON.parse(bearerToken.value)}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }).then(response => {
+      isLoadingProductOptions.value = false;
+      productOptions.value = response.results;
+    })
       .catch(error => {
-        productSelected.value = error.response._data.data;
+        isLoadingProductOptions.value = false;
+        productOptions.value = error.response._data.results;
       })
   }
 
@@ -308,7 +325,9 @@ export default function () {
     isLoadingProducts,
     isLoadingProduct,
     selectProducts,
-    productSelected,
-    searchGlobal, searchPeriodeAt, orderColumn, orderDirection, searchPerPage, pageNumber, rupiah, fixedNumberFormat, rupiahNumberInputFormat, pcsNumberFormatIntegerInputFormat
+    productOptions,
+    searchGlobal, searchPeriodeAt, orderColumn, orderDirection, searchPerPage, pageNumber, rupiah, fixedNumberFormat, rupiahNumberInputFormat, pcsNumberFormatIntegerInputFormat,
+    optionSelectedProduct,
+    isLoadingProductOptions
   }
 }

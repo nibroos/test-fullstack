@@ -45,6 +45,7 @@ class TransactionStoreAction
 
   private function getReferenceNo(int $quantitiy, int $price, int $paymentAmount)
   {
+    // CARA 1
     // $response = Http::withHeaders([
     //   'X-Api-Key' => 'DATAUTAMA',
     //   'X-Signature' => 'Hash sha256 (http method:x-api-key)',
@@ -57,6 +58,8 @@ class TransactionStoreAction
     // $statusCode = $response->status();
     // $data = $response->json();
 
+
+    // CARA 2
     // $client = new Client();
 
     // $response = $client->request('POST', 'http://tes-skill.datautama.com/test-skill/api/v1/transactions', [
@@ -76,7 +79,7 @@ class TransactionStoreAction
 
     // $referenceNo = $data['data']['reference_no'];
 
-    // karena disini saya tidak bisa mengakses API tersebut, maka saya menggunakan dummy data
+    // CARA 3, karena disini saya tidak bisa mengakses API tersebut, maka saya menggunakan dummy data
 
     $referenceNo = 'INV20231107122736412';
     return $referenceNo;

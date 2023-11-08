@@ -17,8 +17,10 @@ class TransactionIndexResource extends JsonResource
         return [
             'id' => $this->id,
             'reference_no' => $this->reference_no,
-            'payment_amount' => $this->payment_amount,
             'product_name' => $this->product_name,
+            'product_price' => $this->product_price,
+            'quantity' => $this->quantity,
+            'payment_amount' => $this->payment_amount,
             'created_at' => $this->created_at,
         ];
     }

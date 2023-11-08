@@ -24,7 +24,7 @@
         <div class="px-6 py-4 flex flex-col">
           <div class="flex flex-row md:flex-col justify-between">
             <div class="flex flex-col gap-3 pr-3 w-full">
-              <div>
+              <div class="flex flex-col gap-1">
                 <label for="name" class="block font-bold text-gray-700 dark:text-zinc-100">
                   Nama <span class="text-rose-500">*</span>
                 </label>
@@ -45,7 +45,7 @@
                   </ul>
                 </div>
               </div>
-              <div>
+              <div class="flex flex-col gap-1">
                 <label for="price" class="block font-bold text-sm text-gray-700 dark:text-zinc-100">
                   Harga <span class="text-rose-500">*</span>
                 </label>
@@ -66,7 +66,7 @@
                   </ul>
                 </div>
               </div>
-              <div>
+              <div class="flex flex-col gap-1">
                 <label for="stock" class="block font-bold text-sm text-gray-700 dark:text-zinc-100">
                   Stok <span class="text-rose-500">*</span>
                 </label>
@@ -87,7 +87,7 @@
                   </ul>
                 </div>
               </div>
-              <div>
+              <div class="flex flex-col gap-1">
                 <label for="description" class="block font-bold text-gray-700 dark:text-zinc-100">
                   Deskripsi
                 </label>
@@ -130,9 +130,7 @@
 import { useForm, useField, defineRule } from "vee-validate";
 import {
   required,
-  min,
-  createPassword,
-  mail
+  min
 } from "../utlis/validationRules";
 
 const runtimeConfig = useRuntimeConfig();
@@ -140,8 +138,6 @@ const emit = defineEmits('updateCurrentSearchProduct')
 
 defineRule("required", required);
 defineRule("min", min);
-defineRule("createPassword", createPassword);
-defineRule("mail", mail);
 
 // Define a validation schema
 const schema = {

@@ -37,4 +37,18 @@ class ProductServices
 
     return $query;
   }
+
+  public function productOptions()
+  {
+    $products = DB::table(Product::TABLE_NAME)
+      ->select('id', 'name', 'price', 'stock')
+      ->when(request('search_name'), function ($query) {
+        $query->where(function ($q) {
+          $q->where('name', 'like', '%' . request('search_name') . '%');
+        });
+      })
+      ->limit(50);
+
+    return $products;
+  }
 }
