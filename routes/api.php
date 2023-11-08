@@ -26,6 +26,7 @@ Route::group(
             'products' => ProductController::class,
             'transactions' => TransactionController::class,
         ]);
+        Route::get('/product/select', [ProductController::class, 'selectProduct']);
         Route::post('/auth/logout', [AuthController::class, 'logoutUser']);
         Route::get('/auth/user', [AuthController::class, 'authUser']);
     }

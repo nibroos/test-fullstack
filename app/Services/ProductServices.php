@@ -11,6 +11,15 @@ class ProductServices
 {
   public function indexProduct(): Builder
   {
+    $orderColumn = request('order_column', 'products.id');
+    if (!in_array($orderColumn, ['products.id', 'products.created_at', 'products.name', 'products.price', 'products.stock'])) {
+      $orderColumn = 'products.id';
+    }
+    $orderDirection = request('order_direction', 'desc');
+    if (!in_array($orderDirection, ['asc', 'desc'])) {
+      $orderDirection = 'desc';
+    }
+
     $searchPeriodeStartAt = Carbon::parse(request('search_periode_start_at', now()->startOfDay()->toDateTimeString()));
     $searchPeriodeEndAt = Carbon::parse(request('search_periode_end_at', now()->endOfDay()->toDateTimeString()));
 
@@ -24,7 +33,7 @@ class ProductServices
         });
       })
       ->whereRaw('products.created_at BETWEEN ? AND ?', [$searchPeriodeStartAt, $searchPeriodeEndAt])
-      ->orderBy('products.id', 'desc');
+      ->orderBy($orderColumn, $orderDirection);
 
     return $query;
   }

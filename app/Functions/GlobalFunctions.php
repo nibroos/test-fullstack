@@ -4,7 +4,7 @@ use Illuminate\Database\Query\Builder;
 
 function getPaginateByBuilder(Builder $builder)
 {
-  $perPage = request('search_per_page', 20);
+  $perPage = request('search_per_page', 5);
   return $builder->paginate($perPage);
 }
 

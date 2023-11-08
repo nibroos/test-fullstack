@@ -8,11 +8,12 @@ use App\Services\ProductServices;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Actions\Products\ProductStoreAction;
-use App\Actions\Products\ProductUpdateAction;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Actions\Products\ProductStoreAction;
 use App\Http\Resources\ProductIndexResource;
+use App\Actions\Products\ProductUpdateAction;
+use App\Http\Resources\ProductSelectResource;
 
 class ProductController extends Controller
 {
@@ -36,6 +37,14 @@ class ProductController extends Controller
                 'message' => 'Produk tidak ditemukan', 'data' => []
             ], 404);
         }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Product $product)
+    {
+        return new ProductIndexResource($product);
     }
 
     /**
@@ -86,6 +95,20 @@ class ProductController extends Controller
             DB::rollBack();
             Log::error($exception->getMessage());
             return response(['message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function selectProduct()
+    {
+        $productBuilder = $this->productService->indexProduct();
+        $productBuilder->limit(50);
+        $products = getObjectByBuilder($productBuilder);
+        if ($products->isNotEmpty()) {
+            return ProductSelectResource::collection($products);
+        } else {
+            return response([
+                'message' => 'Produk tidak ditemukan', 'data' => []
+            ], 404);
         }
     }
 }
