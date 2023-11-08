@@ -11,7 +11,6 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss'
   ],
   app:{
-    rootId: 'test-fullstack',
     head:{
       title: 'Test Fullstack Nibros',
       meta:[
@@ -25,7 +24,4 @@ export default defineNuxtConfig({
       BASE_URL: process.env.NUXT_PUBLIC_BASE_URL,
     },
   },
-  experimental: {
-    renderJsonPayloads: false
-  }
 })
